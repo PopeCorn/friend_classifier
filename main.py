@@ -63,13 +63,21 @@ class Mojmyr(nn.Module):
         x = self.conv_block_2(x)
         x = self.classifier(x)
         return x
-    
-model_0 = Mojmyr(input_shape=3, hidden_units=10, output_shape=1)
-loss_fn = nn.BCEWithLogitsLoss()
-acc_fn = torchmetrics.Accuracy(task='binary')
-optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
 
 def train_step(model: nn.Module, loss_fn: nn.Module, acc_fn: torchmetrics.Accuracy, optimizer: torch.optim, dataloader: DataLoader, epochs):
+    """
+    Trains a model for a binary classification task, calculating both loss and accuracy
+    Args:
+        model: the model that will be trained
+        loss_fn: loss function, should be BCEWithLogitsLoss
+        acc_fn: accuracy function (ideally from torchmetrics)
+        optimizer: optimizer from torch.optim
+        dataloader: dataloader for the data the model will be trained on
+        epochs: the number of times the model will run through the entire dataloader
+  
+    Returns:
+        Each epoch the print out of the current epoch number, loss value, accuracy value (all coloured)          
+    """
     model.train()
     train_loss, train_acc = 0, 0
     for epoch in range(epochs):
@@ -89,6 +97,17 @@ def train_step(model: nn.Module, loss_fn: nn.Module, acc_fn: torchmetrics.Accura
         print(f'Epoch: {Fore.BLUE}{epoch}{Fore.RESET} | Loss: {Fore.RED}{train_loss:.2f}{Fore.RESET} | Accuracy: {Fore.GREEN}{train_acc:.2f}{Fore.RESET}')
 
 def test_step(model: nn.Module, loss_fn: nn.Module, acc_fn: torchmetrics.Accuracy, dataloader: DataLoader):
+    """
+    Tests a model on a binary classification task, calculating both loss and accuracy
+    Args:
+        model: the model that will be tested
+        loss_fn: loss function, should be BCEWithLogitsLoss
+        acc_fn: accuracy function (ideally from torchmetrics)
+        dataloader: dataloader for the data the model will be tested on
+  
+    Returns:
+        At the end of testing; the measured loss and accuracy value (all coloured)          
+    """
     model.eval()
     test_loss, test_acc = 0, 0
     with torch.inference_mode():
@@ -104,6 +123,10 @@ def test_step(model: nn.Module, loss_fn: nn.Module, acc_fn: torchmetrics.Accurac
         test_acc /= len(dataloader)
         print(f'{Fore.CYAN}MÝR TESTING{Fore.RESET}\nLoss: {Fore.RED}{test_loss:.2f}{Fore.RESET} | Accuracy: {Fore.GREEN}{test_acc:.2f}{Fore.RESET}')
 
+model_0 = Mojmyr(input_shape=3, hidden_units=10, output_shape=1)
+loss_fn = nn.BCEWithLogitsLoss()
+acc_fn = torchmetrics.Accuracy(task='binary')
+optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
 
 EPOCHS = 18
 train_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, optimizer=optimizer, dataloader=train_dataloader, epochs=EPOCHS)
