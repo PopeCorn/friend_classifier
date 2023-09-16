@@ -10,54 +10,53 @@ from colorama import Fore
 # 3. Learning rate scheduler - try this method to change the learning rate throughout the training process
 # 4. Visualize the results like in the course
 
+# Save the paths of the image, train, test folders
 image_path = Path("images/")
 train_dir = image_path / "train"
 test_dir = image_path / "test"
 
+# Define data transform for dataset
 data_transform = transforms.Compose([
     transforms.Resize(size=(64, 64)),
     transforms.ToTensor()
 ])
 
+# Turn the images into PyTorch-compatible datasets using ImageFolder
 train_data = datasets.ImageFolder(root=train_dir, transform=data_transform, target_transform=None)
 test_data = datasets.ImageFolder(root=test_dir, transform=data_transform, target_transform=None)
 
-train_dataloader = DataLoader(dataset=train_data, batch_size=1, shuffle=True)
-test_dataloader = DataLoader(dataset=test_data, batch_size=1, shuffle=False)
+# Making dataloaders out of train and test datasets with the batch size of 1 (#mýr dataset isn't that big)
+BATCH_SIZE = 1
+train_dataloader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True)
+test_dataloader = DataLoader(dataset=test_data, batch_size=BATCH_SIZE, shuffle=False)
 
 class Mojmyr(nn.Module):
     def __init__(self, input_shape, hidden_units, output_shape):
         super().__init__()
+
+        # Copy TinyVGG structure, modify it slightly for this specific case
         self.conv_block_1 = nn.Sequential(
-            nn.Conv2d(in_channels=input_shape, 
-                      out_channels=hidden_units, 
-                      kernel_size=3,
-                      stride=1,
-                      padding=1), 
+            nn.Conv2d(input_shape, hidden_units, 3, 1, 1), 
+            nn.ReLU(), 
+            nn.Conv2d(hidden_units, hidden_units, 3, 1, 1),
             nn.ReLU(),
-            nn.Conv2d(in_channels=hidden_units, 
-                      out_channels=hidden_units,
-                      kernel_size=3,
-                      stride=1,
-                      padding=1),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2,
-                         stride=2)
+            nn.MaxPool2d(2, 2)
         )
 
         self.conv_block_2 = nn.Sequential(
-            nn.Conv2d(hidden_units, hidden_units, kernel_size=3, padding=1),
+            nn.Conv2d(hidden_units, hidden_units, 3, 1),
             nn.ReLU(),
-            nn.Conv2d(hidden_units, hidden_units, kernel_size=3, padding=1),
+            nn.Conv2d(hidden_units, hidden_units, 3, 1),
             nn.ReLU(),
             nn.MaxPool2d(2)
         )
 
         self.classifier = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(in_features=hidden_units*16*16,
-                      out_features=output_shape)
+            nn.Linear(in_features=hidden_units*14*14, out_features=output_shape)
         )
+
+    # Required forward method that takes the input 'x' through all the conv_blocks and the classifier, returning logits because of the last Linear layer
     def forward(self, x):
         x = self.conv_block_1(x)
         x = self.conv_block_2(x)
@@ -82,11 +81,12 @@ def train_step(model: nn.Module, loss_fn: nn.Module, acc_fn: torchmetrics.Accura
     train_loss, train_acc = 0, 0
     for epoch in range(epochs):
         for X, y in dataloader:
+            y = y.unsqueeze(dim=1)
             logits = model(X)
-            pred = (torch.sigmoid(logits) > 0.5).float()
-            loss = loss_fn(logits.type(torch.float32), y.unsqueeze(dim=1).type(torch.float32))
+            pred = (torch.sigmoid(logits) > 0.5) # Convert logits to probabilites using sigmoid function, then to labels by setting a 0.5 treshold
+            loss = loss_fn(logits.type(torch.float32), y.type(torch.float32))
+            acc = acc_fn(pred, y) * 100
             train_loss += loss.item()
-            acc = acc_fn(pred, y.unsqueeze(dim=1)) * 100
             train_acc += acc
             optimizer.zero_grad()
             loss.backward()
@@ -112,21 +112,22 @@ def test_step(model: nn.Module, loss_fn: nn.Module, acc_fn: torchmetrics.Accurac
     test_loss, test_acc = 0, 0
     with torch.inference_mode():
         for X, y in dataloader:
+            y = y.unsqueeze(dim=1)
             logits = model(X)
-            pred = (torch.sigmoid(logits) > 0.5).float()
-            loss = loss_fn(logits.type(torch.float32), y.unsqueeze(dim=1).type(torch.float32))
+            pred = (torch.sigmoid(logits) > 0.5).float() # Convert logits to probabilites using sigmoid function, then to labels by setting a 0.5 treshold
+            loss = loss_fn(logits.type(torch.float32), y.type(torch.float32))
+            acc = acc_fn(pred, y) * 100
             test_loss += loss.item()
-            acc = acc_fn(pred, y.unsqueeze(dim=1)) * 100
             test_acc += acc
 
         test_loss /= len(dataloader)
         test_acc /= len(dataloader)
         print(f'{Fore.CYAN}MÝR TESTING{Fore.RESET}\nLoss: {Fore.RED}{test_loss:.2f}{Fore.RESET} | Accuracy: {Fore.GREEN}{test_acc:.2f}{Fore.RESET}')
 
-model_0 = Mojmyr(input_shape=3, hidden_units=10, output_shape=1)
+model_0 = Mojmyr(input_shape=3, hidden_units=10, output_shape=1) # Input 3 because RGB channels; output 1 because this is binary classification
 loss_fn = nn.BCEWithLogitsLoss()
 acc_fn = torchmetrics.Accuracy(task='binary')
-optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
+optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01) # Will make learning rate scheduler
 
 EPOCHS = 18
 train_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, optimizer=optimizer, dataloader=train_dataloader, epochs=EPOCHS)
