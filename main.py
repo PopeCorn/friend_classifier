@@ -127,6 +127,6 @@ loss_fn = nn.BCEWithLogitsLoss()
 acc_fn = torchmetrics.Accuracy(task='binary')
 optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
 
-EPOCHS = 22
+EPOCHS = 20
 train_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, optimizer=optimizer, dataloader=train_dataloader, epochs=EPOCHS)
 test_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, dataloader=test_dataloader)
