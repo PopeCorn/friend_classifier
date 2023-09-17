@@ -1,14 +1,12 @@
 import torch, torch.nn as nn, torchmetrics
-from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 from pathlib import Path
 from colorama import Fore
 
 # CHECKLIST:
 # 1. Data augmentation - use different techniques of augmentation to make the dataset larger
-# 2. Background removal - try using the dataset with and without background to see how it affects performance
-# 3. Learning rate scheduler - try this method to change the learning rate throughout the training process
-# 4. Visualize the results like in the course
+# 2. Visualize the results like in the course
 
 # Save the paths of the image, train, test folders
 image_path = Path("images_without_bg/")
@@ -63,7 +61,7 @@ class Mojmyr(nn.Module):
         x = self.classifier(x)
         return x
 
-def train_step(model: nn.Module, loss_fn: nn.Module, acc_fn: torchmetrics.Accuracy, optimizer: torch.optim, dataloader: DataLoader, epochs):
+def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs):
     """
     Trains a model for a binary classification task, calculating both loss and accuracy
     Args:
@@ -96,7 +94,7 @@ def train_step(model: nn.Module, loss_fn: nn.Module, acc_fn: torchmetrics.Accura
         train_acc /= len(dataloader)
         print(f'Epoch: {Fore.BLUE}{epoch}{Fore.RESET} | Loss: {Fore.RED}{train_loss:.2f}{Fore.RESET} | Accuracy: {Fore.GREEN}{train_acc:.2f}{Fore.RESET}')
 
-def test_step(model: nn.Module, loss_fn: nn.Module, acc_fn: torchmetrics.Accuracy, dataloader: DataLoader):
+def test_step(model, loss_fn, acc_fn, dataloader):
     """
     Tests a model on a binary classification task, calculating both loss and accuracy
     Args:
@@ -127,7 +125,7 @@ def test_step(model: nn.Module, loss_fn: nn.Module, acc_fn: torchmetrics.Accurac
 model_0 = Mojmyr(input_shape=3, hidden_units=10, output_shape=1) # Input 3 because RGB channels; output 1 because this is binary classification
 loss_fn = nn.BCEWithLogitsLoss()
 acc_fn = torchmetrics.Accuracy(task='binary')
-optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01) # Will make learning rate scheduler
+optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
 
 EPOCHS = 22
 train_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, optimizer=optimizer, dataloader=train_dataloader, epochs=EPOCHS)
