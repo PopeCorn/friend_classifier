@@ -11,7 +11,7 @@ from colorama import Fore
 # 4. Visualize the results like in the course
 
 # Save the paths of the image, train, test folders
-image_path = Path("images/")
+image_path = Path("images_without_bg/")
 train_dir = image_path / "train"
 test_dir = image_path / "test"
 
@@ -129,6 +129,6 @@ loss_fn = nn.BCEWithLogitsLoss()
 acc_fn = torchmetrics.Accuracy(task='binary')
 optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01) # Will make learning rate scheduler
 
-EPOCHS = 18
+EPOCHS = 22
 train_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, optimizer=optimizer, dataloader=train_dataloader, epochs=EPOCHS)
 test_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, dataloader=test_dataloader)
