@@ -8,10 +8,11 @@ from colorama import Fore
 # 1. Data augmentation - use different techniques of augmentation to make the dataset larger
 # 2. Visualize the results like in the course
 
-# Save the paths of the image, train, test folders
-image_path = Path("images_without_bg/")
-train_dir = image_path / "train"
-test_dir = image_path / "test"
+# Save the paths of the dataset's train and test folders
+data_path = Path("data/")
+dataset_path = data_path / "dataset_mixed"
+train_dir = dataset_path / "train"
+test_dir = dataset_path / "test"
 
 # Define data transform for dataset
 data_transform = transforms.Compose([
@@ -127,6 +128,6 @@ loss_fn = nn.BCEWithLogitsLoss()
 acc_fn = torchmetrics.Accuracy(task='binary')
 optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
 
-EPOCHS = 20
+EPOCHS = 15
 train_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, optimizer=optimizer, dataloader=train_dataloader, epochs=EPOCHS)
 test_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, dataloader=test_dataloader)
