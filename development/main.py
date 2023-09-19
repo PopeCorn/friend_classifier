@@ -3,7 +3,9 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from pathlib import Path
 from colorama import Fore
+from model import Mojmyr
 
+# Set up device agnostic code
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # CHECKLIST:
@@ -12,9 +14,8 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Save the paths of the dataset's train and test folders
 data_path = Path("data/")
-dataset_path = data_path / "dataset_mixed"
-train_dir = dataset_path / "train"
-test_dir = dataset_path / "test"
+train_dir = data_path / "train"
+test_dir = data_path / "test"
 
 # Define data transform for dataset
 data_transform = transforms.Compose([
@@ -30,39 +31,6 @@ test_data = datasets.ImageFolder(root=test_dir, transform=data_transform, target
 BATCH_SIZE = 1
 train_dataloader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True)
 test_dataloader = DataLoader(dataset=test_data, batch_size=BATCH_SIZE, shuffle=False)
-
-class Mojmyr(nn.Module):
-    def __init__(self, input_shape, hidden_units, output_shape):
-        super().__init__()
-
-        # Copy TinyVGG structure, modify it slightly for this specific case
-        self.conv_block_1 = nn.Sequential(
-            nn.Conv2d(input_shape, hidden_units, 3, 1, 1), 
-            nn.ReLU(), 
-            nn.Conv2d(hidden_units, hidden_units, 3, 1, 1),
-            nn.ReLU(),
-            nn.MaxPool2d(2, 2)
-        )
-
-        self.conv_block_2 = nn.Sequential(
-            nn.Conv2d(hidden_units, hidden_units, 3, 1),
-            nn.ReLU(),
-            nn.Conv2d(hidden_units, hidden_units, 3, 1),
-            nn.ReLU(),
-            nn.MaxPool2d(2)
-        )
-
-        self.classifier = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(in_features=hidden_units*14*14, out_features=output_shape)
-        )
-
-    # Required forward method that takes the input 'x' through all the conv_blocks and the classifier, returning logits because of the last Linear layer
-    def forward(self, x):
-        x = self.conv_block_1(x)
-        x = self.conv_block_2(x)
-        x = self.classifier(x)
-        return x
 
 def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs):
     """
@@ -82,6 +50,8 @@ def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs):
     train_loss, train_acc = 0, 0
     for epoch in range(epochs):
         for X, y in dataloader:
+            print(X.shape)
+            quit()
             X, y = X.to(device), y.to(device)
             y = y.unsqueeze(dim=1)
             logits = model(X)
@@ -97,6 +67,7 @@ def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs):
         train_loss /= len(dataloader)
         train_acc /= len(dataloader)
         print(f'Epoch: {Fore.BLUE}{epoch}{Fore.RESET} | Loss: {Fore.RED}{train_loss:.2f}{Fore.RESET} | Accuracy: {Fore.GREEN}{train_acc:.2f}{Fore.RESET}')
+    return model
 
 def test_step(model, loss_fn, acc_fn, dataloader):
     """
@@ -133,5 +104,7 @@ acc_fn = torchmetrics.Accuracy(task='binary').to(device)
 optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
 
 EPOCHS = 15
-train_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, optimizer=optimizer, dataloader=train_dataloader, epochs=EPOCHS)
+model_0 = train_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, optimizer=optimizer, dataloader=train_dataloader, epochs=EPOCHS)
 test_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, dataloader=test_dataloader)
+
+torch.save(model_0.state_dict(), 'model_0_state_dict.pth')
