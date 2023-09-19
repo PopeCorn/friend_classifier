@@ -4,6 +4,8 @@ from torch.utils.data import DataLoader
 from pathlib import Path
 from colorama import Fore
 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
 # CHECKLIST:
 # 1. Data augmentation - use different techniques of augmentation to make the dataset larger
 # 2. Visualize the results like in the course
@@ -80,6 +82,7 @@ def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs):
     train_loss, train_acc = 0, 0
     for epoch in range(epochs):
         for X, y in dataloader:
+            X, y = X.to(device), y.to(device)
             y = y.unsqueeze(dim=1)
             logits = model(X)
             pred = (torch.sigmoid(logits) > 0.5) # Convert logits to probabilites using sigmoid function, then to labels by setting a 0.5 treshold
@@ -111,6 +114,7 @@ def test_step(model, loss_fn, acc_fn, dataloader):
     test_loss, test_acc = 0, 0
     with torch.inference_mode():
         for X, y in dataloader:
+            X, y = X.to(device), y.to(device)
             y = y.unsqueeze(dim=1)
             logits = model(X)
             pred = (torch.sigmoid(logits) > 0.5).float() # Convert logits to probabilites using sigmoid function, then to labels by setting a 0.5 treshold
@@ -123,9 +127,9 @@ def test_step(model, loss_fn, acc_fn, dataloader):
         test_acc /= len(dataloader)
         print(f'{Fore.CYAN}MÝR TESTING{Fore.RESET}\nLoss: {Fore.RED}{test_loss:.2f}{Fore.RESET} | Accuracy: {Fore.GREEN}{test_acc:.2f}{Fore.RESET}')
 
-model_0 = Mojmyr(input_shape=3, hidden_units=10, output_shape=1) # Input 3 because RGB channels; output 1 because this is binary classification
-loss_fn = nn.BCEWithLogitsLoss()
-acc_fn = torchmetrics.Accuracy(task='binary')
+model_0 = Mojmyr(input_shape=3, hidden_units=10, output_shape=1).to(device) # Input 3 because RGB channels; output 1 because this is binary classification
+loss_fn = nn.BCEWithLogitsLoss().to(device)
+acc_fn = torchmetrics.Accuracy(task='binary').to(device)
 optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
 
 EPOCHS = 15
