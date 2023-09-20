@@ -8,10 +8,6 @@ from model import Mojmyr
 # Set up device agnostic code
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-# CHECKLIST:
-# 1. Data augmentation - use different techniques of augmentation to make the dataset larger
-# 2. Visualize the results like in the course
-
 # Save the paths of the dataset's train and test folders - not included on GitHub using .gitignore because GDPR reasons
 data_path = Path("dev/data/")
 train_dir = data_path / "train"
