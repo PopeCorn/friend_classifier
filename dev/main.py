@@ -1,16 +1,12 @@
-import torch, torch.nn as nn, torchmetrics
+import torch, torch.nn as nn, torch.optim as optim, torchmetrics
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from pathlib import Path
-from colorama import Fore
+from colorama import Fore as F
 from model import Mojmyr
 
 # Set up device agnostic code
 device = "cuda" if torch.cuda.is_available() else "cpu"
-
-# CHECKLIST:
-# 1. Data augmentation - use different techniques of augmentation to make the dataset larger
-# 2. Visualize the results like in the course
 
 # Save the paths of the dataset's train and test folders
 data_path = Path("data/")
@@ -55,7 +51,7 @@ def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs):
             X, y = X.to(device), y.to(device)
             y = y.unsqueeze(dim=1)
             logits = model(X)
-            pred = (torch.sigmoid(logits) > 0.5) # Convert logits to probabilites using sigmoid function, then to labels by setting a 0.5 treshold
+                pred = (torch.sigmoid(logits) > 0.5) # Convert logits to probabilites using sigmoid function, then to labels by setting a 0.5 treshold
             loss = loss_fn(logits.type(torch.float32), y.type(torch.float32))
             acc = acc_fn(pred, y) * 100
             train_loss += loss.item()
@@ -66,7 +62,7 @@ def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs):
 
         train_loss /= len(dataloader)
         train_acc /= len(dataloader)
-        print(f'Epoch: {Fore.BLUE}{epoch}{Fore.RESET} | Loss: {Fore.RED}{train_loss:.2f}{Fore.RESET} | Accuracy: {Fore.GREEN}{train_acc:.2f}{Fore.RESET}')
+        print(f'Epoch: {F.BLUE}{epoch}{F.RESET} | Loss: {F.RED}{train_loss:.2f}{F.RESET} | Accuracy: {F.GREEN}{train_acc:.2f}{F.RESET}')
     return model
 
 def test_step(model, loss_fn, acc_fn, dataloader):
@@ -96,12 +92,12 @@ def test_step(model, loss_fn, acc_fn, dataloader):
 
         test_loss /= len(dataloader)
         test_acc /= len(dataloader)
-        print(f'{Fore.CYAN}MÝR TESTING{Fore.RESET}\nLoss: {Fore.RED}{test_loss:.2f}{Fore.RESET} | Accuracy: {Fore.GREEN}{test_acc:.2f}{Fore.RESET}')
+        print(f'{F.CYAN}MÝR TESTING{F.RESET}\nLoss: {F.RED}{test_loss:.2f}{F.RESET} | Accuracy: {F.GREEN}{test_acc:.2f}{F.RESET}')
 
 model_0 = Mojmyr(input_shape=3, hidden_units=10, output_shape=1).to(device) # Input 3 because RGB channels; output 1 because this is binary classification
 loss_fn = nn.BCEWithLogitsLoss().to(device)
 acc_fn = torchmetrics.Accuracy(task='binary').to(device)
-optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
+optimizer = optim.SGD(params=model_0.parameters(), lr=0.01)
 
 EPOCHS = 15
 model_0 = train_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, optimizer=optimizer, dataloader=train_dataloader, epochs=EPOCHS)
