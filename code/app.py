@@ -29,22 +29,25 @@ class App(ctk.CTk):
         # Button for uploading the image
         self.button = ctk.CTkButton(self, 
                                     text="Upload your image\n(.jpeg, anything else will shut the app down)", 
-                                    command=self.UploadAction)
+                                    command=self.image_processing)
         self.button.grid(padx=20, pady=10, sticky="news")
 
-    def UploadAction(self):
-        filename = filedialog.askopenfilename()
-        file_type = imghdr.what(filename)
+    def image_processing(self):
+        try:
+            filename = filedialog.askopenfilename()
+            file_type = imghdr.what(filename)
 
-        if file_type == "jpeg":
-            image = Image.open(filename)
-            image_tensor = transform(image)
-            results = self.predict(image_tensor)
-            text = results[0][0].item() # Get to the actual boolean value in the tensor
-            print(text)
+            if file_type == "jpeg":
+                image = Image.open(filename)
+                image_tensor = transform(image)
+                results = self.predict(image_tensor)
+                text = results[0][0].item() # Get to the actual boolean value in the tensor
+                print(text)
 
-        else:
-            sys.exit() # The file type must be jpeg
+            else:
+                sys.exit() # The file type must be jpeg
+        except FileNotFoundError:
+            pass
 
     def predict(self, sample):
         with torch.inference_mode():
