@@ -9,7 +9,7 @@ from model import Mojmyr
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Save the paths of the dataset's train and test folders - not included on GitHub using .gitignore because GDPR reasons
-data_path = Path("dev/data/")
+data_path = Path("code/data/")
 train_dir = data_path / "train"
 test_dir = data_path / "test"
 
@@ -92,7 +92,7 @@ def test_step(model, loss_fn, acc_fn, dataloader):
         test_acc /= len(dataloader)
         print(f'{Fore.CYAN}MÝR TESTING{Fore.RESET}\nLoss: {Fore.RED}{test_loss:.2f}{Fore.RESET} | Accuracy: {Fore.GREEN}{test_acc:.2f}{Fore.RESET}')
 
-model_0 = Mojmyr(input_shape=3, hidden_units=10, output_shape=1).to(device) # Input 3 because RGB channels; output 1 because this is binary classification
+model_0 = Mojmyr(input_shape=3, hidden_units=30, output_shape=1).to(device) # Input 3 because RGB channels; output 1 because this is binary classification
 loss_fn = nn.BCEWithLogitsLoss().to(device)
 acc_fn = torchmetrics.Accuracy(task='binary').to(device)
 optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
@@ -101,4 +101,4 @@ EPOCHS = 15
 model_0 = train_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, optimizer=optimizer, dataloader=train_dataloader, epochs=EPOCHS)
 test_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, dataloader=test_dataloader)
 
-torch.save(model_0.state_dict(), 'model_0_state_dict.pth')
+torch.save(model_0.state_dict(), 'code/!model_0_state_dict.pth')
