@@ -1,5 +1,5 @@
 import torch
-from colorama import Fore
+from colorama import Fore as F
 
 def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs, device):
     """
@@ -33,7 +33,7 @@ def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs, device):
 
         train_loss /= len(dataloader)
         train_acc /= len(dataloader)
-        print(f'Epoch: {Fore.BLUE}{epoch}{Fore.RESET} | Loss: {Fore.RED}{train_loss:.2f}{Fore.RESET} | Accuracy: {Fore.GREEN}{train_acc:.2f}{Fore.RESET}')
+        print(f'Epoch: {F.BLUE}{epoch}{F.RESET} | Loss: {F.RED}{train_loss:.2f}{F.RESET} | Accuracy: {F.GREEN}{train_acc:.2f}{F.RESET}')
 
 def test_step(model, loss_fn, acc_fn, dataloader, device):
     """
@@ -62,4 +62,4 @@ def test_step(model, loss_fn, acc_fn, dataloader, device):
 
         test_loss /= len(dataloader)
         test_acc /= len(dataloader)
-        print(f'{Fore.CYAN}MÝR TESTING{Fore.RESET}\nLoss: {Fore.RED}{test_loss:.2f}{Fore.RESET} | Accuracy: {Fore.GREEN}{test_acc:.2f}{Fore.RESET}')
+        print(f'{F.CYAN}MÝR TESTING{F.RESET}\nLoss: {F.RED}{test_loss:.2f}{F.RESET} | Accuracy: {F.GREEN}{test_acc:.2f}{F.RESET}')
