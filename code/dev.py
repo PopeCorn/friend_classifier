@@ -2,7 +2,6 @@ import torch, torch.nn as nn, torchmetrics
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from pathlib import Path
-from colorama import Fore
 from model import Mojmyr
 import functions as f
 
