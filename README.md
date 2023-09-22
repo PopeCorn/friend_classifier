@@ -10,5 +10,8 @@
 
 21.9.2023 - Changed the number of hidden units to 30 (achieved 100% accuracy on test data because of that), coded out almost the entire GUI, spend about quarter of an hour finding my error (forgot to load the state_dict to the new instance of the model), app.py now outputs the model's prediction in the terminal
 
+22.9.2023 - Increased the number of hidden units to 100, tested the model on negative samples that were very similar to the positive ones (added them to the training data, the accuracy of the model during testing after that decreased to about 97% because some images are just too similar; but the number of false positives on images of people similar to Mojmyr significantly decreased), finished the GUI and added a short guide to it about the usage of the app
+![screenshot](https://github.com/PopeCorn/myr/assets/117516270/0595e06d-e0b4-41d3-a863-3c0f825a4eda)
+
 # A little bit of extra info
 I got the idea to make this project at the start of summer of 2023, which I spend learning PyTorch, a library I wanted to be my tool for creating this project. After getting to section 4 of the excellent Mr. Bourke's course (https://youtu.be/Z_ikDlimN6A?si=dMlIJEsyABDEqQgW), I started working on #mýr, experimenting with Siamese networks that I hoped would be the best solution for my problem. Unfortunately, I ran into a whole bunch of errors and because I didn't even fully know what I was doing, this attempt ended unsuccesfully. Then, I decided to go back to what I know and built a model that replicates the TinyVGG CNN structure - and this finally worked. And that is where I'm at right now. 
