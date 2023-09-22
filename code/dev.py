@@ -15,10 +15,7 @@ train_dir = data_path / "train"
 test_dir = data_path / "test"
 
 # Define data transform for dataset
-data_transform = transforms.Compose([
-    transforms.Resize(size=(64, 64)),
-    transforms.ToTensor()
-])
+data_transform = transforms.Compose([transforms.Resize(size=(64, 64)), transforms.ToTensor()])
 
 # Turn the images into PyTorch-compatible datasets using ImageFolder
 train_data = datasets.ImageFolder(root=train_dir, transform=data_transform, target_transform=None)
@@ -29,12 +26,12 @@ BATCH_SIZE = 1
 train_dataloader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True)
 test_dataloader = DataLoader(dataset=test_data, batch_size=BATCH_SIZE, shuffle=False)
 
-model_0 = Mojmyr(input_shape=3, hidden_units=30, output_shape=1).to(device) # Input 3 because RGB channels; output 1 because this is binary classification
+model_0 = Mojmyr(input_shape=3, hidden_units=100, output_shape=1).to(device) # Input 3 because RGB channels; output 1 because this is binary classification
 loss_fn = nn.BCEWithLogitsLoss().to(device)
 acc_fn = torchmetrics.Accuracy(task='binary').to(device)
 optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
 
-EPOCHS = 15
+EPOCHS = 12
 f.train_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, optimizer=optimizer, dataloader=train_dataloader, epochs=EPOCHS, device=device)
 f.test_step(model=model_0, loss_fn=loss_fn, acc_fn=acc_fn, dataloader=test_dataloader, device=device)
 
