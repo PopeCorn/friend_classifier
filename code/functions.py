@@ -1,7 +1,7 @@
 import torch
 from colorama import Fore as F
 
-def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs, device):
+def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs):
     """
     Trains a model for a binary classification task, calculating both loss and accuracy
     Args:
@@ -19,7 +19,6 @@ def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs, device):
     train_loss, train_acc = 0, 0
     for epoch in range(epochs):
         for X, y in dataloader:
-            X, y = X.to(device), y.to(device)
             y = y.unsqueeze(dim=1)
             logits = model(X)
             pred = (torch.sigmoid(logits) > 0.5) # Convert logits to probabilites using sigmoid function, then to labels by setting a 0.5 treshold
@@ -35,7 +34,7 @@ def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs, device):
         train_acc /= len(dataloader)
         print(f'Epoch: {F.BLUE}{epoch}{F.RESET} | Loss: {F.RED}{train_loss:.2f}{F.RESET} | Accuracy: {F.GREEN}{train_acc:.2f}{F.RESET}')
 
-def test_step(model, loss_fn, acc_fn, dataloader, device):
+def test_step(model, loss_fn, acc_fn, dataloader):
     """
     Tests a model on a binary classification task, calculating both loss and accuracy
     Args:
@@ -51,7 +50,6 @@ def test_step(model, loss_fn, acc_fn, dataloader, device):
     test_loss, test_acc = 0, 0
     with torch.inference_mode():
         for X, y in dataloader:
-            X, y = X.to(device), y.to(device)
             y = y.unsqueeze(dim=1)
             logits = model(X)
             pred = (torch.sigmoid(logits) > 0.5).float() # Convert logits to probabilites using sigmoid function, then to labels by setting a 0.5 treshold
