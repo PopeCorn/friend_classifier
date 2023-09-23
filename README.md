@@ -1,3 +1,6 @@
+# Download
+https://www.mediafire.com/file/faf316efy32v79n/myr.exe/file - download this file, run it, it will instal the "myr" folder in which you'll find the model itself (.pth format) and the application.
+
 # The Development
 16.9.2023 - Basic model built, trained on the dataset containing 51 positive and 51 negative images.
 
@@ -12,6 +15,8 @@
 
 22.9.2023 - Increased the number of hidden units to 100, tested the model on negative samples that were very similar to the positive ones (added them to the training data, the accuracy of the model during testing after that decreased to about 97% because some images are just too similar; but the number of false positives on images of people similar to Mojmyr significantly decreased), finished the GUI and added a short guide to it about the usage of the app
 ![screenshot](https://github.com/PopeCorn/myr/assets/117516270/0595e06d-e0b4-41d3-a863-3c0f825a4eda)
+
+23.9.2023 - Made the .exe, retrained the model on CPU with more samples, achieving 100% accuracy on test data once again.
 
 # A little bit of extra info
 I got the idea to make this project at the start of summer of 2023, which I spend learning PyTorch, a library I wanted to be my tool for creating this project. After getting to section 4 of the excellent Mr. Bourke's course (https://youtu.be/Z_ikDlimN6A?si=dMlIJEsyABDEqQgW), I started working on #mýr, experimenting with Siamese networks that I hoped would be the best solution for my problem. Unfortunately, I ran into a whole bunch of errors and because I didn't even fully know what I was doing, this attempt ended unsuccesfully. Then, I decided to go back to what I know and built a model that replicates the TinyVGG CNN structure - and this finally worked. Over all, I spent about 10 hours developing #mýr and 20+ hours learning PyTorch.
