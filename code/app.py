@@ -1,7 +1,7 @@
 import torch, torchvision.transforms as transforms
 import customtkinter as ctk
 from customtkinter import filedialog
-import imghdr, sys
+import imghdr
 from model import Mojmyr
 from PIL import Image
 
@@ -9,13 +9,13 @@ from PIL import Image
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green")
 
-# Initialize the model, set global variables to be used throughout the code
+# Initialize the model
 myr_model = Mojmyr(input_shape=3, hidden_units=100, output_shape=1)
 myr_model.load_state_dict(torch.load('code/!model_0_state_dict.pth'))
 
 conversion = {True: "MYR IS THERE 🗿", False: "MYR IS NOT THERE"}
 image_count = 0
-g = '''Short guide: 
+guide = '''Short guide: 
 For accurate predictions, the image 
 should be of a human face with approximately 
 same sides. If the prediction is wrong, it is
@@ -38,7 +38,7 @@ class App(ctk.CTk):
         self.minsize(500, 350)
         self.model = model
 
-        self.guide = ctk.CTkLabel(self, text=g, fg_color="transparent").pack(padx=20, pady=10, side="top")
+        self.guide = ctk.CTkLabel(self, text=guide, fg_color="transparent").pack(padx=20, pady=10, side="top")
 
         # Button for uploading the image
         self.button = ctk.CTkButton(self, text="Upload your image (jpeg)", command=self.image_processing)
@@ -53,7 +53,7 @@ class App(ctk.CTk):
             file_type = imghdr.what(filename)
 
             if file_type == "jpeg":
-                global image_count, d
+                global image_count
                 image_count += 1
                 image = Image.open(filename)
                 image_tensor = transform(image)
