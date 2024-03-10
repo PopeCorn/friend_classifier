@@ -1,6 +1,3 @@
-# Download
-https://www.mediafire.com/file/faf316efy32v79n/myr.exe/file - download this file, run it, it will instal the "myr" folder in which you'll find the model itself (.pth format) and the application.
-
 # The Development
 16.9.2023 - Basic model built, trained on the dataset containing 51 positive and 51 negative images.
 
