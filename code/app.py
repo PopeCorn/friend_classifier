@@ -18,9 +18,9 @@ image_count = 0
 guide = '''Short guide: 
 For accurate predictions, the image 
 should be of a human face with approximately 
-same sides. If the prediction is wrong, it is
-probably because one of these requirements was
-not fulfilled.
+same sides and 3 color channels (= not black-and-white). 
+If the prediction is wrong, it is probably because one 
+of these requirements was not fulfilled.
 
 But the case can also be that the model just cannot
 predict the image you provided correctly, as its testing
