@@ -52,7 +52,7 @@ def test_step(model, loss_fn, acc_fn, dataloader):
         for X, y in dataloader:
             y = y.unsqueeze(dim=1)
             logits = model(X)
-            pred = (torch.sigmoid(logits) > 0.5).float() # Convert logits to probabilites using sigmoid function, then to labels by setting a 0.5 treshold
+            pred = (torch.sigmoid(logits) > 0.5).float()
             loss = loss_fn(logits.type(torch.float32), y.type(torch.float32))
             acc = acc_fn(pred, y) * 100
             test_loss += loss.item()

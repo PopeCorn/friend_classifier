@@ -13,7 +13,7 @@ ctk.set_default_color_theme("green")
 myr_model = Mojmyr(input_shape=3, hidden_units=100, output_shape=1)
 myr_model.load_state_dict(torch.load('code/!model_0_state_dict.pth'))
 
-conversion = {True: "MYR IS THERE 🗿", False: "MYR IS NOT THERE"}
+convert = {True: "MYR IS THERE 🗿", False: "MYR IS NOT THERE"}
 image_count = 0
 guide = '''Short guide: 
 For accurate predictions, the image 
@@ -60,7 +60,7 @@ class App(ctk.CTk):
                 results, certainty = self.predict(image_tensor)
 
                 if self.label != None: # Update the prediction result
-                    self.label.configure(text=f"Image: {image_count}\n{conversion[results]}\nCertainty: {certainty:.2f}%")
+                    self.label.configure(text=f"Image: {image_count}\n{convert[results]}\nCertainty: {certainty:.2f}%")
                 self.label.pack(padx=20, pady=10, side="top")
 
             else:
