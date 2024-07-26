@@ -52,7 +52,7 @@ class App(ctk.CTk):
                 img_count += 1
                 image = Image.open(filename)
                 image_tensor = transform(image)
-                results, certainty = self.predict(image_tensor)
+                certainty = self.predict(image_tensor)
 
                 stats = f'''Image count: {img_count}
 Probability of MYR there: {certainty:.2f}%'''
@@ -69,10 +69,8 @@ Probability of MYR there: {certainty:.2f}%'''
         with torch.inference_mode():
             logits = self.model(sample.unsqueeze(dim=0)) # get right shape 
             prob_pred = torch.sigmoid(logits)[0][0].item()
-            pred = (prob_pred > 0.5)
-            
             certainty = (prob_pred * 100)
-            return pred, certainty
+            return certainty
 
 root = App(myr_model)
 root.mainloop()
