@@ -1,8 +1,5 @@
-# improvement 1: write results of training and testing into a .txt file and just
-# print 'results stored in: <name>.txt
-
 import torch
-from colorama import Fore as F
+from datetime import datetime
 
 def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs) -> None:
     model.train()
@@ -20,17 +17,10 @@ def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs) -> None:
             loss.backward()
             optimizer.step()
 
-    train_loss /= (len(dataloader) * epochs)
-    train_acc /= (len(dataloader) * epochs)
+        train_loss /= len(dataloader)
+        train_acc /= len(dataloader)
 
-    if not os.path.exists('!RESULTS/'):
-        os.mkdir('!RESULTS/')
-
-    with open('train_results.txt', 'w') as file:
-        file.writeline('your results are positive :D')
-
-
-#        print(f'Epoch: {F.BLUE}{epoch}{F.RESET} | Loss: {F.RED}{train_loss:.2f}{F.RESET} | Accuracy: {F.GREEN}{train_acc:.2f}{F.RESET}')
+        store_results('train_results', epoch, train_loss, train_acc)
 
 def test_step(model, loss_fn, acc_fn, dataloader) -> None:
     model.eval()
@@ -45,7 +35,24 @@ def test_step(model, loss_fn, acc_fn, dataloader) -> None:
             test_loss += loss.item()
             test_acc += acc
 
-    test_loss /= (len(dataloader) * epochs)
-    test_acc /= (len(dataloader) * epochs)
+        test_loss /= len(dataloader)
+        test_acc /= len(dataloader)
+        
+        store_results('test_results', epoch, test_loss, test_acc)
 
-#        print(f'{F.CYAN}MÝR TESTING{F.RESET}\nLoss: {F.RED}{test_loss:.2f}{F.RESET} | Accuracy: {F.GREEN}{test_acc:.2f}{F.RESET}')
+def determine_time() -> str:
+    now = datetime.now()
+    date = now.strftime("%d/%m/%Y %H:%M:%S") # normal people format
+    output = date.replace(" ", "|")
+    return output
+
+def store_results(filename, epoch, loss, acc) -> None:
+    if not os.path.exists('!RESULTS/'):
+        os.mkdir('!RESULTS/')
+
+    date = determine_time()
+    txt_file = f'!RESULTS/{date}{filename}.txt'
+
+    with open(txt_file, 'w') as file:
+        file.write(f'Epoch: {epoch} | Loss: {loss} | Accuracy: {acc}')
+        file.write('\n')
