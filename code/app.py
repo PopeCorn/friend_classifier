@@ -11,7 +11,6 @@ ctk.set_default_color_theme("green")
 myr_model = Mojmyr(input_shape=3, hidden_units=100, output_shape=1)
 myr_model.load_state_dict(torch.load('!model_0_state_dict.pth'))
 
-convert = {True: "MYR IS THERE 🗿", False: "MYR IS NOT THERE"}
 img_count = 0
 guide = '''Short guide:
 1. For good results, upload images of an actual face
@@ -32,7 +31,7 @@ class App(ctk.CTk):
     def __init__(self, model):
         super().__init__()
 
-        self.minsize(400, 150)
+        self.minsize(400, 280)
         self.model = model
 
         self.guide = ctk.CTkLabel(self, text=guide, fg_color="transparent")
@@ -53,10 +52,11 @@ class App(ctk.CTk):
                 img_count += 1
                 image = Image.open(filename)
                 image_tensor = transform(image)
-                results, sure = self.predict(image_tensor)
+                results, certainty = self.predict(image_tensor)
 
-                answer = convert[results]
-                stats = f"Image: {img_count}\n{answer}\nCertainty: {sure:.2f}%"
+                stats = f'''Image count: {img_count}
+Probability of MYR there: {certainty:.2f}%'''
+
                 self.label.configure(text=stats)
                 self.label.pack(padx=20, pady=10, side="top")
 
@@ -67,10 +67,11 @@ class App(ctk.CTk):
 
     def predict(self, sample):
         with torch.inference_mode():
-            logits = self.model(sample.unsqueeze(dim=0)) # sample.unsqueeze to get the right shape for the model
+            logits = self.model(sample.unsqueeze(dim=0)) # get right shape 
             prob_pred = torch.sigmoid(logits)[0][0].item()
-            pred = (prob_pred > 0.5) # Convert logits to probabilites using sigmoid function, then to labels by setting a 0.5 treshold
-            certainty = (prob_pred * 100) if pred == 1 else (100 - prob_pred * 100)
+            pred = (prob_pred > 0.5)
+            
+            certainty = (prob_pred * 100)
             return pred, certainty
 
 root = App(myr_model)
