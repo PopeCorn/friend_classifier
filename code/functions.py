@@ -1,7 +1,12 @@
+# improvement 1: write results of training and testing into a .txt file and just
+# print 'results stored in: <name>.txt
+
+# improvement 2: lines too long
+
 import torch
 from colorama import Fore as F
 
-def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs):
+def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs) -> None:
     """
     Trains a model for a binary classification task, calculating both loss and accuracy
     Args:
@@ -34,7 +39,7 @@ def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs):
         train_acc /= len(dataloader)
         print(f'Epoch: {F.BLUE}{epoch}{F.RESET} | Loss: {F.RED}{train_loss:.2f}{F.RESET} | Accuracy: {F.GREEN}{train_acc:.2f}{F.RESET}')
 
-def test_step(model, loss_fn, acc_fn, dataloader):
+def test_step(model, loss_fn, acc_fn, dataloader) -> None:
     """
     Tests a model on a binary classification task, calculating both loss and accuracy
     Args:

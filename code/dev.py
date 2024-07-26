@@ -1,3 +1,5 @@
+# improvement 1: larger, more diverse test+train data
+
 import torch, torch.nn as nn, torchmetrics
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
@@ -6,7 +8,7 @@ from model import Mojmyr
 import functions as f
 
 # Save the paths of the dataset's train and test folders - not included on GitHub using .gitignore because GDPR reasons
-data_path = Path("code/data/")
+data_path = Path("data/")
 train_dir = data_path / "train"
 test_dir = data_path / "test"
 

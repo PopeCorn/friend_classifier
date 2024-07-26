@@ -5,31 +5,28 @@ import imghdr
 from model import Mojmyr
 from PIL import Image
 
+
 # CTK settings
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green")
 
 # Initialize the model
 myr_model = Mojmyr(input_shape=3, hidden_units=100, output_shape=1)
-myr_model.load_state_dict(torch.load('code/!model_0_state_dict.pth'))
+myr_model.load_state_dict(torch.load('!model_0_state_dict.pth'))
 
 convert = {True: "MYR IS THERE 🗿", False: "MYR IS NOT THERE"}
 image_count = 0
-guide = '''Short guide: 
-For accurate predictions, the image 
-should be of a human face with approximately 
-same sides and 3 color channels (= not black-and-white). 
-If the prediction is wrong, it is probably because one 
-of these requirements was not fulfilled.
+guide = '''
 
-But the case can also be that the model just cannot
-predict the image you provided correctly, as its testing
-accuracy cannot get over about 97.5% - be aware of that
-when uploading an image that is not Mojmyr but looks very 
-much like it is.'''
+GET IT WORKING WITH ALL IMAGES
+
+LAZY CUNT'''
 
 # Define image transform that will be used on the input sample
-transform = transforms.Compose([transforms.Resize(size=(64, 64)), transforms.ToTensor()])
+transform = transforms.Compose([
+    transforms.Grayscale(num_output_channels=3),
+    transforms.Resize(size=(64, 64)), 
+    transforms.ToTensor()])
 
 class App(ctk.CTk):
     def __init__(self, model):
