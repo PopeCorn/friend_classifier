@@ -5,81 +5,72 @@ import imghdr
 from model import Mojmyr
 from PIL import Image
 
-# CTK settings
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green")
 
-# Initialize the model
 myr_model = Mojmyr(input_shape=3, hidden_units=100, output_shape=1)
-myr_model.load_state_dict(torch.load('code/!model_0_state_dict.pth'))
+myr_model.load_state_dict(torch.load('!model_0_state_dict.pth'))
 
-convert = {True: "MYR IS THERE 🗿", False: "MYR IS NOT THERE"}
-image_count = 0
-guide = '''Short guide: 
-For accurate predictions, the image 
-should be of a human face with approximately 
-same sides and 3 color channels (= not black-and-white). 
-If the prediction is wrong, it is probably because one 
-of these requirements was not fulfilled.
+img_count = 0
+guide = '''Short guide:
+1. For good results, upload images of an actual face
 
-But the case can also be that the model just cannot
-predict the image you provided correctly, as its testing
-accuracy cannot get over about 97.5% - be aware of that
-when uploading an image that is not Mojmyr but looks very 
-much like it is.'''
+2. The model is trained only on faces, it cannot properly
+process anything else and will give non-sensical results. I wish
+I could re-train it on more diverse samples, however, I no longer have
+any of the original positive data.
 
-# Define image transform that will be used on the input sample
-transform = transforms.Compose([transforms.Resize(size=(64, 64)), transforms.ToTensor()])
+3. Images in formats other than jpeg won't get uploaded.'''
+
+transform = transforms.Compose([
+    transforms.Grayscale(num_output_channels=3), # in case of 1 colour channel 
+    transforms.Resize(size=(64, 64)), # same size model was trained on
+    transforms.ToTensor()])
 
 class App(ctk.CTk):
     def __init__(self, model):
         super().__init__()
 
-        self.minsize(500, 350)
+        self.minsize(400, 280)
         self.model = model
 
-        self.guide = ctk.CTkLabel(self, text=guide, fg_color="transparent").pack(padx=20, pady=10, side="top")
+        self.guide = ctk.CTkLabel(self, text=guide, fg_color="transparent")
+        self.guide.pack(padx=20, pady=10, side="top")
 
-        # Button for uploading the image
-        self.button = ctk.CTkButton(self, text="Upload your image (jpeg)", command=self.image_processing)
+        self.button = ctk.CTkButton(self, text="Upload", command=self.upload)
         self.button.pack(padx=20, pady=10, side="top")
 
-        # Label for model's prediction result
         self.label = ctk.CTkLabel(self, text=None, fg_color="transparent")
 
-    def image_processing(self):
+    def upload(self):
+        global img_count
         try:
             filename = filedialog.askopenfilename()
             file_type = imghdr.what(filename)
 
             if file_type == "jpeg":
-                global image_count
-                image_count += 1
+                img_count += 1
                 image = Image.open(filename)
                 image_tensor = transform(image)
-                results, certainty = self.predict(image_tensor)
+                certainty = self.predict(image_tensor)
 
-                if self.label != None: # Update the prediction result
-                    self.label.configure(text=f"Image: {image_count}\n{convert[results]}\nCertainty: {certainty:.2f}%")
+                stats = f'''Image count: {img_count}
+Probability of MYR there: {certainty:.2f}%'''
+
+                self.label.configure(text=stats)
                 self.label.pack(padx=20, pady=10, side="top")
 
-            else:
-                pass
-            
-            # Update the window
             self.update()
-            self.update_idletasks()
 
         except FileNotFoundError:
             pass
 
     def predict(self, sample):
         with torch.inference_mode():
-            logits = self.model(sample.unsqueeze(dim=0)) # sample.unsqueeze to get the right shape for the model
+            logits = self.model(sample.unsqueeze(dim=0)) # get right shape 
             prob_pred = torch.sigmoid(logits)[0][0].item()
-            pred = (prob_pred > 0.5) # Convert logits to probabilites using sigmoid function, then to labels by setting a 0.5 treshold
-            certainty = (prob_pred * 100) if pred == 1 else (100 - prob_pred * 100)
-            return pred, certainty
+            certainty = (prob_pred * 100)
+            return certainty
 
 root = App(myr_model)
 root.mainloop()
