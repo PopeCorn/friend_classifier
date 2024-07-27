@@ -11,7 +11,11 @@ ctk.set_default_color_theme("green")
 myr_model = Mojmyr(input_shape=3, hidden_units=100, output_shape=1)
 myr_model.load_state_dict(torch.load('!model_0_state_dict.pth'))
 
-img_count = 0
+transform = transforms.Compose([
+    transforms.Grayscale(num_output_channels=3), # in case of 1 colour channel 
+    transforms.Resize(size=(64, 64)), # same size model was trained on
+    transforms.ToTensor()])
+
 guide = '''Short guide:
 1. For good results, upload images of an actual face
 
@@ -22,11 +26,7 @@ any of the original positive data.
 
 3. Images in formats other than jpeg won't get uploaded.'''
 
-transform = transforms.Compose([
-    transforms.Grayscale(num_output_channels=3), # in case of 1 colour channel 
-    transforms.Resize(size=(64, 64)), # same size model was trained on
-    transforms.ToTensor()])
-
+img_count = 0
 class App(ctk.CTk):
     def __init__(self, model):
         super().__init__()
@@ -56,7 +56,6 @@ class App(ctk.CTk):
 
                 stats = f'''Image count: {img_count}
 Probability of MYR there: {certainty:.2f}%'''
-
                 self.label.configure(text=stats)
                 self.label.pack(padx=20, pady=10, side="top")
 
