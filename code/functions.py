@@ -43,10 +43,10 @@ def test_step(model, loss_fn, acc_fn, dataloader, date) -> None:
         store_results('test_results', epoch, test_loss, test_acc, date)
 
 def store_results(filename, epoch, loss, acc, date) -> None:
-    if not os.path.exists('!RESULTS/'):
-        os.mkdir('!RESULTS/')
+    if not os.path.exists('!Results/'):
+        os.mkdir('!Results/')
 
-    txt_file = f'!RESULTS/{date}{filename}.txt'
+    txt_file = f'!Results/{date}{filename}.txt'
 
     with open(txt_file, 'w') as file:
         file.write(f'Epoch: {epoch} | Loss: {loss} | Accuracy: {acc}')

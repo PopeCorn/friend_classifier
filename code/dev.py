@@ -36,7 +36,7 @@ acc_fn = torchmetrics.Accuracy(task='binary')
 optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
 
 EPOCHS = 12
-now = datetime.now() # used in functions.py result-files naming conventions
+now = datetime.now() # used in functions.py for naming files with results
 date = now.strftime("%d/%m/%Y %H:%M:%S").replace(" ", "|")
 
 f.train_step(model=model_0, 
@@ -52,4 +52,4 @@ f.test_step(model=model_0,
             dataloader=test_dataloader,
             date=date)
 
-torch.save(model_0.state_dict(), 'code/!model_0_state_dict.pth')
+torch.save(model_0.state_dict(), '!model_0_state_dict.pth')
