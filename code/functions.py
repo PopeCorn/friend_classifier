@@ -1,4 +1,5 @@
 import torch
+import os
 
 def train_step(model, loss_fn, acc_fn, optimizer, dataloader, epochs, date) -> None:
     model.train()
@@ -36,7 +37,7 @@ def test_step(model, loss_fn, acc_fn, dataloader, date) -> None:
             loss = loss_fn(logits.type(torch.float32), y.type(torch.float32))
             acc = acc_fn(pred, y) * 100
             test_loss += loss.item()
-            test_acc += acc
+            test_acc += acc 
 
         test_loss /= len(dataloader)
         test_acc /= len(dataloader)
