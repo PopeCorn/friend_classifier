@@ -1,8 +1,17 @@
+# Packages used
+1. Pytorch + torchvision for the machine learning part of the project
+2. PIL + imghdr for image processing
+3. customtkinter for GUI (more modern than original tkinter)
+4. OS + pathlib for saving files and manipulating with directories
+5. PyInstaller for creating an executable file from app.py
+_- just a test to see if everything works, this was never intended to be an
+  actually used application_
+
 # The Development
 
 16.9.2023 - Basic model built, trained on the dataset containing 51 positive and 51 negative images.
 
-17.9.2023 - Created a new folder of the #mýr dataset images, this time without background, got better results, the model stopped overfitting at higher epoch counts, the average accuracy was improved. Created a mixed dataset containing all the images in two versions, with and without background.
+17.9.2023 - After training on a dataset of images lacking backgrounds, the model stopped overfitting at higher epoch counts and the average accuracy was improved. Created a mixed dataset containing all the images in both versions, with and without background, and used data augmentation to enlarge the dataset.
 
 ![results](https://github.com/PopeCorn/myr/assets/117516270/63141241-2063-4a30-92dd-edf73ee4629e)
 
@@ -15,5 +24,7 @@
 17. and 20.3.2024 - Changed some variable names and removed obviously unnecessary features.
 
 26.7.2024 - Returned to this project to fix my old, ugly code -> refined and created more functions, shortened lines, improved readability, stored results of training and testing to a .txt file.
+
+1.8.2024 - Last minor edits such as resolving missing imports and editing the README.
 
 ![screenshot](https://github.com/user-attachments/assets/cb8b7b1c-1da3-481f-9e3e-119330b70247)
