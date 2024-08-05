@@ -20,7 +20,7 @@ _- just a test to see if everything works, this was never intended to be an
 
 23.9.2023 - Retrained the model on CPU with more samples, achieving 100% accuracy on test data once again.
 
-17. and 20.3.2024 - Changed some variable names and removed obviously unnecessary features.
+17.3.2024+20.3.2024 - Changed some variable names and removed obviously unnecessary features.
 
 26.7.2024 - Returned to this project to fix my old code -> refined and created more functions, shortened lines, improved readability, stored results of training and testing to a .txt file.
 
