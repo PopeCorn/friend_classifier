@@ -1,7 +1,7 @@
 from torch import nn 
 
 # slightly modified TinyVGG structure
-class Mojmyr(nn.Module):
+class Friend(nn.Module):
     def __init__(self, input_shape, hidden_units, output_shape):
         super().__init__()
 

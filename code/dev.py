@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 from pathlib import Path
 from datetime import datetime
 
-from model import Mojmyr
+from model import Friend
 import functions as f
 
 data_path = Path("data/") # dirs were deleted after the model was trained
@@ -32,23 +32,23 @@ test_dataloader = DataLoader(dataset=test_data,
 now = datetime.now() # used in functions.py for naming files with results
 date = now.strftime("%d/%m/%Y %H:%M:%S").replace(" ", "|")
 
-model_0 = Mojmyr(input_shape=3, hidden_units=100, output_shape=1)
+friend_model = Friend(input_shape=3, hidden_units=100, output_shape=1)
 loss_fn = nn.BCEWithLogitsLoss()
 acc_fn = torchmetrics.Accuracy(task='binary')
 optimizer = torch.optim.SGD(params=model_0.parameters(), lr=0.01)
 
 EPOCHS = 12
-f.train_step(model=model_0, 
+f.train_step(model=friend_model, 
              loss_fn=loss_fn, 
              acc_fn=acc_fn, 
              optimizer=optimizer, 
              dataloader=train_dataloader, 
              epochs=EPOCHS,
              date=date)
-f.test_step(model=model_0, 
+f.test_step(model=friend_model, 
             loss_fn=loss_fn, 
             acc_fn=acc_fn, 
             dataloader=test_dataloader,
             date=date)
 
-torch.save(model_0.state_dict(), '!model_0_state_dict.pth')
+torch.save(friend_model.state_dict(), '!friend_model_state_dict.pth')

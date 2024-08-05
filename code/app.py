@@ -2,14 +2,14 @@ import torch, torchvision.transforms as transforms
 import customtkinter as ctk
 from customtkinter import filedialog
 import imghdr
-from model import Mojmyr
+from model import Friend
 from PIL import Image
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green")
 
-myr_model = Mojmyr(input_shape=3, hidden_units=100, output_shape=1)
-myr_model.load_state_dict(torch.load('!model_0_state_dict.pth'))
+friend_model = Friend(input_shape=3, hidden_units=100, output_shape=1)
+friend_model.load_state_dict(torch.load('!model_0_state_dict.pth'))
 
 transform = transforms.Compose([
     transforms.Grayscale(num_output_channels=3), # in case of 1 colour channel 
@@ -55,7 +55,8 @@ class App(ctk.CTk):
                 certainty = self.predict(image_tensor)
 
                 stats = f'''Image count: {img_count}
-Probability of MYR there: {certainty:.2f}%'''
+Probability of [a certain friend of mine] being there: {certainty:.2f}%'''
+               
                 self.label.configure(text=stats)
                 self.label.pack(padx=20, pady=10, side="top")
 
@@ -71,5 +72,5 @@ Probability of MYR there: {certainty:.2f}%'''
             certainty = (prob_pred * 100)
             return certainty
 
-root = App(myr_model)
+root = App(friend_model)
 root.mainloop()

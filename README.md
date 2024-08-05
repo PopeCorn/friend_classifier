@@ -27,5 +27,3 @@ _- just a test to see if everything works, this was never intended to be an
 ![screenshot](https://github.com/user-attachments/assets/cb8b7b1c-1da3-481f-9e3e-119330b70247)
 
 1.8.2024 - Last minor edits such as resolving missing imports and editing the README.
-
-![screenshot](https://github.com/user-attachments/assets/cb8b7b1c-1da3-481f-9e3e-119330b70247)
