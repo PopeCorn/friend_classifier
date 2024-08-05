@@ -1,13 +1,18 @@
-# Packages used
-1. Pytorch + torchvision for the machine learning part of the project
-2. PIL + imghdr for image processing
-3. customtkinter for GUI (more modern than original tkinter)
-4. OS + pathlib for saving files and manipulating with directories
-5. PyInstaller for creating an executable file from app.py
-_- just a test to see if everything works, this was never intended to be an
-  actually used application_
+# Current state
+Can I run the app in app.py? **Yes**, if you have the required python packages installed.
 
-# The Development
+Can I re-train the model in dev.py? **Not with the original samples**, as I no longer have the image dataset. A new dataset in the same format would need to be created.
+
+Is this learning project finished? **Yes**, as I do not intend to make any further changes or updates for now.
+
+# Packages
+1. Pytorch + torchvision for the machine learning part of the project.
+2. PIL + imghdr for image processing.
+3. customtkinter for GUI (more modern than original tkinter).
+4. OS + pathlib for saving files and manipulating with directories.
+5. PyInstaller for creating an executable file from app.py. _- just a test to see if everything works as an executable_
+
+# Development
 16.9.2023 - Basic model built, trained on the dataset containing 51 positive and 51 negative images.
 
 17.9.2023 - Created a new folder of the dataset images without background, the model stopped overfitting at higher epoch counts, the average accuracy was improved. Created a mixed dataset containing all the images in two versions, with and without background.
