@@ -1,6 +1,8 @@
 # Current state
 Can I run the app in app.py? **Yes**, if you have the required python packages installed.
+
 Can I re-train the model in dev.py? **Not with the original samples**, as I no longer have the image dataset. A new dataset in the same format would need to be created.
+
 Is this learning project finished? **Yes**, as I do not intend to make any further changes or updates for now.
 
 # Packages
